@@ -27,7 +27,7 @@ public class PlaylistManager {
 				Playlist playlist = new Playlist();
 				for(int j = 0; j < numOfSongs; j++) {
 					String songName = fin.nextLine();
-					Audio song = new Audio(songName);
+					Song song = new Song(songName);
 					playlist.add(song);
 				}
 				playlists.put(playlistName, playlist);
@@ -43,7 +43,7 @@ public class PlaylistManager {
 		File[] listOfFiles = folder.listFiles();
 		for (File musicFile : listOfFiles) {
 		    if (musicFile.isFile() && !musicFile.getName().equals(".DS_Store")) {
-		        playlistOfAllSongs.add(new Audio(musicFile.getName().substring(0, musicFile.getName().length() - 4)));
+		        playlistOfAllSongs.add(new Song(musicFile.getName().substring(0, musicFile.getName().length() - 4)));
 		    }
 		}
 		playlists.put("all songs", playlistOfAllSongs);
@@ -82,8 +82,8 @@ public class PlaylistManager {
 				int playlistSize = playlist.size();
 				pw.println(playlistSize);
 				
-				LinkedList<Audio> songs = playlist.getPlaylist();
-				for(Audio song : songs) {
+				LinkedList<Song> songs = playlist.getPlaylist();
+				for(Song song : songs) {
 					pw.println(song.getName());
 				}
 			}

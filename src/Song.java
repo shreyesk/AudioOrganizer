@@ -3,13 +3,13 @@ import java.io.FileInputStream;
 
 import javazoom.jl.player.Player;
 
-public class Audio implements Runnable{
+public class Song implements Runnable{
 
 	private String songName;
 	private Player player;
 	private Thread t;
 	
-	public Audio(String name) {
+	public Song(String name) {
 		songName = name;
 	}
 	
@@ -57,10 +57,10 @@ public class Audio implements Runnable{
 	}
 	
 	public boolean equals(Object o) {
-		if(!(o instanceof Audio)) {
+		if(!(o instanceof Song)) {
 			return false;
 		}
-		Audio s = (Audio) o;
+		Song s = (Song) o;
 		if(this.getName().equals(s.getName())) {
 			return true;
 		}

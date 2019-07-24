@@ -2,21 +2,21 @@ import java.util.LinkedList;
 
 public class Playlist {
 	
-	private LinkedList<Audio> songs;
+	private LinkedList<Song> songs;
 	
 	public Playlist() {
-		songs = new LinkedList<Audio>();
+		songs = new LinkedList<Song>();
 	}
 	
-	public void add(Audio song) {
+	public void add(Song song) {
 		songs.add(song);
 	}
 	
-	public void remove(Audio song) {
+	public void remove(Song song) {
 		songs.remove(song);
 	}
 	
-	public LinkedList<Audio> getPlaylist() {
+	public LinkedList<Song> getPlaylist() {
 		return songs;
 	}
 	

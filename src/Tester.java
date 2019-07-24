@@ -3,7 +3,7 @@
 public class Tester {
 
 	public static void main(String[] args) {
-		Vis vis = new Vis();
+		GUI gui = new GUI();
 //		Connecter connecter = new Connecter("playlists.txt");
 //		Scanner scan = new Scanner(System.in);
 //		String line = scan.nextLine();

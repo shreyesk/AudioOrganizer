@@ -1,8 +1,10 @@
+import java.util.LinkedList;
+
 public class Connecter implements Runnable{
 
 	private PlaylistManager pm;
-	private AudioQueue sq;
-	private Audio song;
+	private SongQueue sq;
+	private Song song;
 	private Thread songFinished;
 	private boolean isPaused = false;
 	
@@ -21,7 +23,7 @@ public class Connecter implements Runnable{
 			}
 		} else if(command.equals("view")) {
 			String playlistName = parts[1];
-			for(Audio song : pm.getPlaylist(playlistName).getPlaylist()) {
+			for(Song song : pm.getPlaylist(playlistName).getPlaylist()) {
 				returnString += song.getName() + "\n";
 			}
 		} else if(command.equals("create")) {
@@ -33,9 +35,9 @@ public class Connecter implements Runnable{
 		} else if(command.equals("rush")) {
 			String songName = parts[1];
 			if(sq == null) {
-				sq = new AudioQueue();
+				sq = new SongQueue();
 			}
-			sq.rush(new Audio(songName));
+			sq.rush(new Song(songName));
 			if(isPaused) {
 				resumePlaying();
 			}
@@ -54,7 +56,7 @@ public class Connecter implements Runnable{
 			pm.save();
 			pm = new PlaylistManager("playlists.txt");
 		} else if(command.equals("remove")) {
-			Audio song = new Audio(parts[1]);
+			Song song = new Song(parts[1]);
 			pm.getPlaylist(parts[2]).remove(song);
 			pm.save();
 			pm = new PlaylistManager("playlists.txt");
@@ -69,12 +71,21 @@ public class Connecter implements Runnable{
 		} else if(command.equals("skip")) {
 			skip();
 		} else if(command.equals("preview")) {
-			Audio[] songs = sq.getSongs();
-			for(Audio song : songs) {
+			Song[] songs = sq.getSongs();
+			for(Song song : songs) {
 				returnString += song.getName() + "\n";
 			}
 		} else if(command.equals("queue")) {
 			queue(parts[1]);
+		} else if(command.equals("search")) {
+			String query = parts[1];
+			String playlistName = parts[2];
+			LinkedList<Song> songs = pm.getPlaylist(playlistName).getPlaylist();
+			for(Song song : songs) {
+				if(song.getName().contains(query)) {
+					returnString += song.getName() + "\n";
+				}
+			}
 		} else if(command.equals("save")) {
 			pm.save();
 			pm = new PlaylistManager("playlists.txt");
@@ -83,7 +94,7 @@ public class Connecter implements Runnable{
 	}
 	
 	private void queue(String songName) {
-		Audio song = new Audio(songName);
+		Song song = new Song(songName);
 		sq.add(song);
 	}
 
@@ -112,7 +123,7 @@ public class Connecter implements Runnable{
 
 	private void add(String songName, String playlistName) {
 		Playlist playlist = pm.getPlaylist(playlistName);
-		playlist.add(new Audio(songName));
+		playlist.add(new Song(songName));
 		pm.replace(songName, playlist);
 	}
 
@@ -125,7 +136,7 @@ public class Connecter implements Runnable{
 			song.end();
 			songFinished.stop();
 		}
-		sq = new AudioQueue(playlist);
+		sq = new SongQueue(playlist);
 		song = sq.getSong();
 		song.play();
 		songFinished = new Thread(this);
@@ -141,7 +152,7 @@ public class Connecter implements Runnable{
 			song.end();
 			songFinished.stop();
 		}
-		sq = new AudioQueue(playlist);
+		sq = new SongQueue(playlist);
 		sq.shuffle();
 		song = sq.getSong();
 		song.play();

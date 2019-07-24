@@ -56,6 +56,62 @@ public class GUI {
 		frame.getContentPane().repaint();
 	}
 	
+	public void displaySongs(String foundSongs, String playlistName) {
+		frame.getContentPane().removeAll();
+		
+		String[] songs = foundSongs.split("\n");
+		JPanel songsPanel = new JPanel();
+		songsPanel.setLayout(new BoxLayout(songsPanel, BoxLayout.Y_AXIS));
+		for(String song : songs) {
+			JLabel songLabel = new JLabel(song);
+			JButton add = new JButton("Add");
+			JButton remove = new JButton("Remove");
+			JButton play = new JButton("Play");
+			JButton queue = new JButton("Queue");
+			
+			add.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					addToPlaylist(song, playlistName);
+				}
+			});
+			remove.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					connecter.decide("remove\t" + song + "\t" + playlistName);
+					displayPlaylist(playlistName);
+				}
+			});
+			play.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					connecter.decide("rush\t" + song);
+				}
+			});
+			queue.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					connecter.decide("queue\t" + song);
+				}
+			});
+			
+			JPanel songPanel = new JPanel();
+			songPanel.add(songLabel);
+			songPanel.add(add);
+			songPanel.add(remove);
+			songPanel.add(play);
+			songPanel.add(queue);
+			songsPanel.add(songPanel);
+		}
+		JScrollPane scrollPane = new JScrollPane(songsPanel);
+		frame.getContentPane().add(BorderLayout.CENTER, scrollPane);
+		
+		showHomeRow();
+		
+		frame.getContentPane().revalidate();
+		frame.getContentPane().repaint();
+	}
+	
 	public void displayPlaylist(String playlistName) {
 		frame.getContentPane().removeAll();
 		
@@ -88,6 +144,18 @@ public class GUI {
 			}
 		});
 		playlistControlPanel.add(deletePlaylist);
+		
+		JTextField searchbar = new JTextField(20);
+		JButton search = new JButton("Search");
+		search.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String foundSongs = connecter.decide("search\t" + searchbar.getText() + "\t" + playlistName);
+				displaySongs(foundSongs, playlistName);
+			}
+		});
+		playlistControlPanel.add(searchbar);
+		playlistControlPanel.add(search);
 		
 		frame.getContentPane().add(BorderLayout.NORTH, playlistControlPanel);
 		
