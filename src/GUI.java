@@ -14,7 +14,7 @@ public class GUI {
 
 	Connecter connecter;
 	
-	JFrame frame;
+	private JFrame frame;
 	
 	public GUI() {
 		connecter = new Connecter("playlists.txt");

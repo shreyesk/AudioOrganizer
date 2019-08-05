@@ -56,8 +56,10 @@ public class SongQueue {
 	}
 	
 	public void shuffle() {
-		Song[] tempSongsArray = (Song[]) songs.toArray();
-		ArrayList<Song> tempSongsList = (ArrayList<Song>) Arrays.asList(tempSongsArray);
+		ArrayList<Song> tempSongsList = new ArrayList<>();
+		for(Song song : songs) {
+			tempSongsList.add(song);
+		}
 		Collections.shuffle(tempSongsList);
 		songs.clear();
 		for(Song s : tempSongsList) {

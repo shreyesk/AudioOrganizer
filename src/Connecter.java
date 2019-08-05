@@ -6,7 +6,8 @@ public class Connecter implements Runnable{
 	private SongQueue sq;
 	private Song song;
 	private Thread songFinished;
-	private boolean isPaused = false;
+	//switch isPaused back to private
+	public boolean isPaused = false;
 	
 	public Connecter(String fileName) {
 		pm = new PlaylistManager(fileName);
@@ -99,16 +100,18 @@ public class Connecter implements Runnable{
 	}
 
 	private void skip() {
-		if(song != null) {
-			song.end();
-		}
 		if(isPaused) {
 			resumePlaying();
 		}
-		song = sq.getSong();
-		song.play();
-		songFinished = new Thread(this);
-		songFinished.start();
+		if(song != null) {
+			song.end();
+		}
+		if(sq.size() > 0) {
+			song = sq.getSong();
+			song.play();
+			songFinished = new Thread(this);
+			songFinished.start();
+		}
 	}
 
 	private void resumePlaying() {
@@ -134,13 +137,14 @@ public class Connecter implements Runnable{
 		}
 		if(song != null) {
 			song.end();
-			songFinished.stop();
 		}
 		sq = new SongQueue(playlist);
-		song = sq.getSong();
-		song.play();
-		songFinished = new Thread(this);
-		songFinished.start();
+		if(sq.size() > 0) {
+			song = sq.getSong();
+			song.play();
+			songFinished = new Thread(this);
+			songFinished.start();
+		}
 	}
 	
 	private void shuffle(String playlistName) {
@@ -150,14 +154,15 @@ public class Connecter implements Runnable{
 		}
 		if(song != null) {
 			song.end();
-			songFinished.stop();
 		}
 		sq = new SongQueue(playlist);
 		sq.shuffle();
-		song = sq.getSong();
-		song.play();
-		songFinished = new Thread(this);
-		songFinished.start();
+		if(sq.size() > 0) {
+			song = sq.getSong();
+			song.play();
+			songFinished = new Thread(this);
+			songFinished.start();
+		}
 	}
 
 	public void create(String playlistName) {
@@ -167,10 +172,14 @@ public class Connecter implements Runnable{
 	@Override
 	public void run() {
 		String currentSong = song.getName();
-		while(song!= null && currentSong == song.getName() && !song.isFinished()) {
-			System.out.print("");
+		while(currentSong.equals(song.getName()) && !song.isFinished()) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		if(sq.size() > 0 && song != null && currentSong.equals(song.getName())) {
+		if(sq.size() > 0 && currentSong.equals(song.getName())) {
 			skip();
 		}
 	}
